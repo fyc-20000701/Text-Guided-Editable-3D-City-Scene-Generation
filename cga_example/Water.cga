@@ -1,0 +1,29 @@
+/**
+ * File:    Water.cga
+ * Created: 19 May 2014 18:33:19 GMT
+ * Author:  chri7180
+ */
+
+version "2017.1"
+
+@Range(min=-180, max=180, restricted=false) @Angle
+attr Rotation = rand(-180,180)
+@Range(min=0.1, max=20.1, restricted=false)
+attr Scale = 5
+@File
+attr Texture = "Landscape_Design_Greenspace/Water/SeaWater.jpg"
+attr SizeX = 100
+attr SizeZ = 100
+
+
+Water -->
+	alignScopeToAxes(y)
+	rotateScope(0,Rotation,0)
+	setupProjection(0, scope.xz, SizeX * Scale, SizeZ * Scale)
+	projectUV(0)
+	texture(Texture)
+	set(material.name, "watermaterial__waterparams_2_5")
+	
+	
+		
+	

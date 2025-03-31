@@ -1,0 +1,105 @@
+/**
+ * File:    ũ�彨��.cga
+ * Created: 1 Apr 2022 00:50:03 GMT
+ * Author:  pc
+ */
+
+
+
+version "2019.0"
+#������ƣ�˵�����ߴ��Сȡ���ڽ�������
+# path to building assets
+attr scifiAssetFormat = "duoceng01/models/untitled.dae"
+
+# street textures
+const street_tex = "maps/scifi_texture_street_dark.jpg"
+const streetSide_tex = "maps/scifi_texture_street_bright.jpg"
+# scale factors for street texture
+factor_v = rand()*0.004 + 0.007 	
+factor_u = factor_v*imageInfo(street_tex, sy)/imageInfo(street_tex, sx)		
+
+
+# RULES ###########
+
+###################################
+# Buildings
+#
+attr height=rand(21,28)
+Church="duoceng01/models/untitled.dae"
+@StartRule 
+Lot -->  
+
+	Ground
+	innerRectangle(edge) {shape: Footprint}
+
+LotCorner --> Ground
+LotInner --> Lot
+
+Footprint -->
+	
+	alignScopeToGeometry(yUp, 0, longest)
+	s('1, 0, '1)
+	
+	Building
+
+ 
+Building --> 
+	extrude(height)
+	i(Church)
+   
+	
+Ground -->
+	setupProjection(0,world.xz,5,5) projectUV(0)
+	texture("maps/scifi_texture_ground.jpg")
+	# specularity
+	set(material.specular.r, 0) # for the looks in the CityEngine we add some over-exagerated specularity (otherwise the model is too dark for opengl...)
+	set(material.specular.g, 0)
+	set(material.specular.b, 0)		
+	set(material.specularmap, "maps/scifi_texture_ground.jpg")
+	set(material.shininess, 1)
+	# bump
+	set(material.bumpmap, "maps/scifi_texture_ground.jpg")
+	set(material.bumpValue, -.1) 
+	# reflectivity
+	set(material.reflectivity, 1)	
+
+
+
+###################################
+# Streets
+#
+
+Street --> StreetTex
+Sidewalk --> comp(f) {all: split(y) { 2 : StreetLine | ~1: Ground } } 
+Crossing --> StreetTex
+
+Junction 		--> Crossing
+JunctionEntry 	--> Street
+Joint		 	--> Street
+
+Freeway 		--> Street
+FreewayEntry	--> Street
+
+Roundabout		--> Street
+RoundaboutIsland--> Sidewalk
+RoundaboutEntry --> Street
+
+
+StreetTex --> 
+	scaleUV(0, factor_u*geometry.du(0, unitSpace)/geometry.du(0, uvSpace), factor_v*geometry.dv(0, unitSpace)/geometry.dv(0, uvSpace))
+	translateUV(0, rand(), rand())
+	texture(street_tex)
+	# specularity
+	set(material.specular.r, 1) # for the looks in the CityEngine we add some over-exagerated specularity (otherwise the model is too dark for opengl...)
+	set(material.specular.g, 1)
+	set(material.specular.b, 1)		
+	# shininess
+	set(material.shininess, 1)
+	# reflectivity
+	set(material.reflectivity, 1)
+		
+StreetLine --> 
+	scaleUV(0, factor_u*geometry.du(0, unitSpace)/geometry.du(0, uvSpace), factor_v*geometry.dv(0, unitSpace)/geometry.dv(0, uvSpace))
+	translateUV(0, rand(), rand())
+	texture(streetSide_tex)
+	 
