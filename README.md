@@ -1,6 +1,6 @@
 # Text-Guided Editable 3D City Scene Generation
 
-<img src="images/main.png" alt="图片描述" width="1280" height="720">
+<img src="images/main.png" alt="图片描述" width="1280" height="480">
 
 ## 环境配置
 
